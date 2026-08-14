@@ -1,0 +1,267 @@
+<!DOCTYPE html><html lang="es" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Roma Glam House - Gestión de Citas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed": "#350f08",
+                      "tertiary": "#443224",
+                      "inverse-primary": "#ffb2b9",
+                      "on-error": "#ffffff",
+                      "on-tertiary-fixed": "#27180c",
+                      "tertiary-fixed-dim": "#dec1ad",
+                      "secondary": "#875045",
+                      "surface-container-low": "#f8f2ef",
+                      "on-tertiary-container": "#d4b8a4",
+                      "surface-tint": "#99434e",
+                      "on-secondary": "#ffffff",
+                      "surface-container": "#f3edea",
+                      "surface-bright": "#fef8f5",
+                      "secondary-container": "#ffb8aa",
+                      "background": "#fef8f5",
+                      "on-background": "#1d1b1a",
+                      "on-primary-container": "#ffa4ad",
+                      "outline-variant": "#dac1c2",
+                      "on-primary": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "on-surface": "#1d1b1a",
+                      "error": "#ba1a1a",
+                      "primary-fixed": "#ffdadc",
+                      "tertiary-fixed": "#fbddc8",
+                      "primary-container": "#82313d",
+                      "on-surface-variant": "#544243",
+                      "surface-dim": "#ded9d6",
+                      "error-container": "#ffdad6",
+                      "inverse-surface": "#32302e",
+                      "on-tertiary-fixed-variant": "#574334",
+                      "secondary-fixed": "#ffdad3",
+                      "on-primary-fixed-variant": "#7b2b38",
+                      "on-secondary-fixed-variant": "#6b392f",
+                      "surface-container-high": "#ede7e4",
+                      "on-primary-fixed": "#40000f",
+                      "tertiary-container": "#5d4839",
+                      "surface-container-highest": "#e7e1de",
+                      "inverse-on-surface": "#f5f0ed",
+                      "surface": "#fef8f5",
+                      "primary": "#641a28",
+                      "surface-variant": "#e7e1de",
+                      "secondary-fixed-dim": "#fdb5a7",
+                      "on-secondary-container": "#7b463c",
+                      "outline": "#877273",
+                      "primary-fixed-dim": "#ffb2b9",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error-container": "#93000a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "section-gap": "80px",
+                      "margin-mobile": "16px",
+                      "container-max": "1200px",
+                      "margin-desktop": "40px",
+                      "base": "8px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "label-md": [
+                              "Manrope"
+                      ],
+                      "display-lg": [
+                              "Libre Caslon Text"
+                      ],
+                      "body-lg": [
+                              "Manrope"
+                      ],
+                      "headline-lg-mobile": [
+                              "Libre Caslon Text"
+                      ],
+                      "headline-md": [
+                              "Libre Caslon Text"
+                      ],
+                      "body-md": [
+                              "Manrope"
+                      ],
+                      "headline-lg": [
+                              "Libre Caslon Text"
+                      ],
+                      "label-sm": [
+                              "Manrope"
+                      ]
+              },
+              "fontSize": {
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="bg-surface shadow-[0px_10px_30px_rgba(130,49,61,0.05)] w-full sticky top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto h-20">
+<!-- Brand -->
+<div class="flex items-center gap-4">
+
+<button class="flex items-center justify-center gap-2 px-4 py-2 bg-primary-container text-on-primary rounded hover:opacity-90 transition-colors font-label-md">
+<span class="material-symbols-outlined">arrow_back</span>
+Regresar al Formulario
+</button></div>
+<!-- Navigation Links -->
+<div class="hidden md:flex items-center gap-8">
+
+
+
+
+
+</div>
+<!-- Actions -->
+
+<div class="flex items-center gap-4"></div></div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow px-margin-mobile md:px-margin-desktop w-full max-w-container-max mx-auto py-12">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-primary mb-2">Gestión de Citas</h1>
+<p class="text-on-surface-variant font-body-md">Administra y supervisa las reservas de tus clientes.</p>
+</div>
+<!-- Search & Filters -->
+<div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface border border-outline-variant rounded focus:border-primary-container focus:ring-1 focus:ring-primary-container outline-none transition-colors font-body-md text-on-surface placeholder:text-outline" placeholder="Buscar cliente..." type="text">
+</div>
+<button class="flex items-center justify-center gap-2 px-4 py-2 border border-primary-container text-primary-container rounded hover:bg-surface-container-low transition-colors font-label-md">
+<span class="material-symbols-outlined">filter_list</span>
+                    Filtros
+                </button>
+
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="bg-surface rounded-xl shadow-[0px_10px_30px_rgba(130,49,61,0.03)] border border-surface-variant overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-surface-variant text-on-surface-variant font-label-md"><th class="px-6 py-4 font-semibold">Cliente</th><th class="px-6 py-4 font-semibold">Teléfono</th><th class="px-6 py-4 font-semibold">Servicio</th><th class="px-6 py-4 font-semibold">Profesión</th><th class="px-6 py-4 font-semibold">Primera Vez</th><th class="px-6 py-4 font-semibold">Fecha y Hora</th><th class="px-6 py-4 font-semibold">Información Médica</th><th class="px-6 py-4 font-semibold">Estado</th><th class="px-6 py-4 font-semibold text-right">Acciones</th></tr>
+</thead>
+<tbody class="font-body-md text-on-surface divide-y divide-surface-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-bright transition-colors duration-200 group"><td class="px-6 py-4"><div class="flex items-center gap-3"><span class="font-medium text-primary">Valeria Morales</span></div></td><td class="px-6 py-4 text-on-surface-variant">+34 612 345 678</td><td class="px-6 py-4">Manicura Rusa</td><td class="px-6 py-4">Abogada</td><td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-green-800">check_circle</span></td><td class="px-6 py-4">24 Oct, 10:00 AM</td><td class="px-6 py-4"><button class="text-primary hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">medical_information</span> Ver</button></td><td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Confirmada</span></td><td class="px-6 py-4 text-right"><div class="flex justify-end gap-2 transition-colors duration-200"><button class="p-1 text-outline hover:text-primary transition-colors" title="Editar"><span class="material-symbols-outlined text-[20px]">edit</span></button><button class="p-1 text-outline hover:text-error transition-colors" title="Borrar"><span class="material-symbols-outlined text-[20px]">delete</span></button></div></td></tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-bright transition-colors duration-200 group"><td class="px-6 py-4"><div class="flex items-center gap-3"><span class="font-medium text-primary">Lucía Castro</span></div></td><td class="px-6 py-4 text-on-surface-variant">+34 623 456 789</td><td class="px-6 py-4">Pedicura Spa</td><td class="px-6 py-4">Diseñadora</td><td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-outline">cancel</span></td><td class="px-6 py-4">24 Oct, 11:30 AM</td><td class="px-6 py-4"><button class="text-primary hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">medical_information</span> Ver</button></td><td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pendiente</span></td><td class="px-6 py-4 text-right"><div class="flex justify-end gap-2 transition-colors duration-200"><button class="p-1 text-outline hover:text-primary transition-colors" title="Editar"><span class="material-symbols-outlined text-[20px]">edit</span></button><button class="p-1 text-outline hover:text-error transition-colors" title="Borrar"><span class="material-symbols-outlined text-[20px]">delete</span></button></div></td></tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-bright transition-colors duration-200 group"><td class="px-6 py-4"><div class="flex items-center gap-3"><span class="font-medium text-primary">Elena Vargas</span></div></td><td class="px-6 py-4 text-on-surface-variant">+34 634 567 890</td><td class="px-6 py-4">Esmaltado Semipermanente</td><td class="px-6 py-4">Médica</td><td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-green-800">check_circle</span></td><td class="px-6 py-4">24 Oct, 02:00 PM</td><td class="px-6 py-4"><button class="text-primary hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">medical_information</span> Ver</button></td><td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Confirmada</span></td><td class="px-6 py-4 text-right"><div class="flex justify-end gap-2 transition-colors duration-200"><button class="p-1 text-outline hover:text-primary transition-colors" title="Editar"><span class="material-symbols-outlined text-[20px]">edit</span></button><button class="p-1 text-outline hover:text-error transition-colors" title="Borrar"><span class="material-symbols-outlined text-[20px]">delete</span></button></div></td></tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-bright transition-colors duration-200 group"><td class="px-6 py-4"><div class="flex items-center gap-3"><span class="font-medium text-primary">María Rodríguez</span></div></td><td class="px-6 py-4 text-on-surface-variant">+34 645 678 901</td><td class="px-6 py-4">Diseño Acrílico</td><td class="px-6 py-4">Ingeniera</td><td class="px-6 py-4 text-center"><span class="material-symbols-outlined text-outline">cancel</span></td><td class="px-6 py-4">25 Oct, 09:00 AM</td><td class="px-6 py-4"><button class="text-primary hover:underline flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">medical_information</span> Ver</button></td><td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pendiente</span></td><td class="px-6 py-4 text-right"><div class="flex justify-end gap-2 transition-colors duration-200"><button class="p-1 text-outline hover:text-primary transition-colors" title="Editar"><span class="material-symbols-outlined text-[20px]">edit</span></button><button class="p-1 text-outline hover:text-error transition-colors" title="Borrar"><span class="material-symbols-outlined text-[20px]">delete</span></button></div></td></tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="bg-surface-container-low px-6 py-4 border-t border-surface-variant flex items-center justify-between">
+<span class="text-sm text-on-surface-variant">Mostrando 1 a 4 de 24 citas</span>
+<div class="flex gap-2">
+<button class="p-1 rounded text-outline hover:bg-surface hover:text-primary transition-colors disabled:opacity-50">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-1 rounded text-outline hover:bg-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low py-12 mt-auto border-t border-surface-variant">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto gap-6">
+<div class="font-display-lg text-headline-md text-primary italic">Roma Glam House</div>
+<div class="flex flex-wrap justify-center gap-6">
+
+
+
+
+</div>
+<div class="text-tertiary font-body-md text-sm">
+                © 2027 Doom Forge Studios</div>
+</div>
+</footer>
+
+
+
+
+
+
+</body></html>
