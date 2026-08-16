@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
@@ -409,7 +409,9 @@ export default function CitasPage() {
                   <tr key={cita.id} className="hover:bg-surface-bright transition-colors duration-200">
                     <td className="px-6 py-4"><span className="font-medium text-primary">{cita.nombre}</span></td>
                     <td className="px-6 py-4 text-on-surface-variant">{cita.telefono}</td>
-                    <td className="px-6 py-4">{formatServicio(cita.servicio)}</td>
+                    <td className="px-6 py-4">
+                      {[cita.servicio, ...(cita.servicios_adicionales || [])].map(formatServicio).join(", ")}
+                    </td>
                     <td className="px-6 py-4">{cita.profesion ?? <span className="text-outline">—</span>}</td>
                     <td className="px-6 py-4 text-center">
                       {cita.primera_vez

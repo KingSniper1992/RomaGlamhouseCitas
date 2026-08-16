@@ -51,6 +51,10 @@ export default function Home() {
     setStatus("loading");
     setErrorMsg("");
 
+    const serviciosFiltrados = formData.servicios.filter((s) => s !== "");
+    const servicioprincipal = serviciosFiltrados[0] ?? "";
+    const adicionales = serviciosFiltrados.slice(1);
+
     const { error } = await supabase.from("citas").insert([
       {
         nombre: formData.nombre,
@@ -58,7 +62,8 @@ export default function Home() {
         profesion: formData.profesion || null,
         primera_vez: formData.primera_vez,
         fecha: formData.fecha,
-        servicio: formData.servicios.filter((s) => s !== "").join(", "),
+        servicio: servicioprincipal,
+        servicios_adicionales: adicionales.length > 0 ? adicionales : null,
         info_medica: formData.info_medica,
       },
     ]);
