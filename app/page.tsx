@@ -13,7 +13,7 @@ export default function Home() {
     profesion: "",
     primera_vez: false,
     fecha: "",
-    servicio: "",
+    servicios: [""],
     info_medica: "ninguna",
   });
 
@@ -30,6 +30,22 @@ export default function Home() {
     }
   };
 
+  const handleServicioChange = (index: number, value: string) => {
+    const newServicios = [...formData.servicios];
+    newServicios[index] = value;
+    setFormData((prev) => ({ ...prev, servicios: newServicios }));
+  };
+
+  const addServicio = () => {
+    setFormData((prev) => ({ ...prev, servicios: [...prev.servicios, ""] }));
+  };
+
+  const removeServicio = (index: number) => {
+    const newServicios = [...formData.servicios];
+    newServicios.splice(index, 1);
+    setFormData((prev) => ({ ...prev, servicios: newServicios }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("loading");
@@ -42,7 +58,7 @@ export default function Home() {
         profesion: formData.profesion || null,
         primera_vez: formData.primera_vez,
         fecha: formData.fecha,
-        servicio: formData.servicio,
+        servicio: formData.servicios.filter((s) => s !== "").join(", "),
         info_medica: formData.info_medica,
       },
     ]);
@@ -59,7 +75,7 @@ export default function Home() {
         profesion: "",
         primera_vez: false,
         fecha: "",
-        servicio: "",
+        servicios: [""],
         info_medica: "ninguna",
       });
     }
@@ -74,12 +90,12 @@ export default function Home() {
           <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-secondary-fixed-dim rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
           
           {/* Header */}
-          <div className="text-center mb-10 relative z-10">
-            <div className="relative h-48 w-full mx-auto mb-6">
+          <div className="text-center mb-8 relative z-10">
+            <div className="relative h-64 w-full mx-auto mb-2">
               <Image 
                 alt="Roma Glam House Logo" 
-                className="object-contain" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCThkfUeZG0lJ76xtzw9f5dnHKiQ_mfuQKyiBw_X2bL3X_b9nZ7_CeL2EXUstZKWonLBZvixEPYhIwlIjrmjrSh8Q1gaLOIsN_UHCSuIRgBWnQ1q62UvVgqMHaVw7MOVL273N8RxJsleQWV0xceBoqD_i-EMW9N5OXlLXHTnwHIgQ8f8zO3l0ZquJSoWrEIe-ztNkX1_YRqIG_FMiSDvvuP3l2_VNI7W959oMoa9uNpykejm9r_LR1_mKVaWUauGKEbZQ"
+                className="object-contain drop-shadow-md scale-110" 
+                src="/logo.png"
                 fill
                 priority
               />
@@ -191,28 +207,48 @@ export default function Home() {
                 </div>
                 {/* Servicio */}
                 <div className="flex flex-col space-y-2">
-                  <label className="font-label-md text-label-md text-primary uppercase" htmlFor="servicio">Servicio Principal</label>
-                  <select 
-                    className="form-input rounded px-4 py-3 font-body-md text-body-md text-on-surface w-full appearance-none bg-transparent" 
-                    id="servicio" 
-                    name="servicio" 
-                    required
-                    value={formData.servicio}
-                    onChange={handleChange}
-                    disabled={status === "loading"}
-                  >
-                    <option disabled value="">Selecciona un servicio...</option>
-                    <option value="manicure_spa">Manicure Spa</option>
-                    <option value="pedicure_spa">Pedicure Spa</option>
-                    <option value="unas_acrilicas">Uñas Acrílicas</option>
-                    <option value="gel_semipermanente">Gel Semipermanente</option>
-                  </select>
+                  <label className="font-label-md text-label-md text-primary uppercase">Servicio(s)</label>
+                  <div className="flex flex-col space-y-3">
+                    {formData.servicios.map((servicio, index) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <select 
+                          className="form-input rounded px-4 py-3 font-body-md text-body-md text-on-surface w-full appearance-none bg-transparent" 
+                          required
+                          value={servicio}
+                          onChange={(e) => handleServicioChange(index, e.target.value)}
+                          disabled={status === "loading"}
+                        >
+                          <option disabled value="">{index === 0 ? "Selecciona un servicio..." : "Selecciona otro servicio..."}</option>
+                          <option value="manicure_spa">Manicure Spa</option>
+                          <option value="pedicure_spa">Pedicure Spa</option>
+                          <option value="unas_acrilicas">Uñas Acrílicas</option>
+                          <option value="gel_semipermanente">Gel Semipermanente</option>
+                        </select>
+                        {index > 0 && (
+                          <button 
+                            type="button" 
+                            onClick={() => removeServicio(index)}
+                            className="text-error hover:text-error/80 transition-colors p-2 flex-shrink-0"
+                            title="Eliminar servicio"
+                            disabled={status === "loading"}
+                          >
+                            <span className="material-symbols-outlined">delete</span>
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
               
-              {/* Botón Añadir Servicio (Simulado) */}
+              {/* Botón Añadir Servicio */}
               <div className="flex justify-end">
-                <button className="flex items-center space-x-2 text-primary hover:text-primary-container transition-colors duration-300 font-label-md text-label-md" type="button">
+                <button 
+                  className="flex items-center space-x-2 text-primary hover:text-primary-container transition-colors duration-300 font-label-md text-label-md disabled:opacity-50 disabled:cursor-not-allowed" 
+                  type="button"
+                  onClick={addServicio}
+                  disabled={formData.servicios[formData.servicios.length - 1] === "" || status === "loading"}
+                >
                   <span className="material-symbols-outlined text-[18px]">add</span>
                   <span>Añadir otro servicio</span>
                 </button>
