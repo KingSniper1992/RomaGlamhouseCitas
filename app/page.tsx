@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
+
+type SubmitStatus = "idle" | "loading" | "success" | "error";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -14,6 +17,9 @@ export default function Home() {
     info_medica: "ninguna",
   });
 
+  const [status, setStatus] = useState<SubmitStatus>("idle");
+  const [errorMsg, setErrorMsg] = useState<string>("");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
@@ -24,10 +30,39 @@ export default function Home() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Datos del formulario para la base de datos:", formData);
-    // Aquí se enviarán los datos a la base de datos en el futuro
+    setStatus("loading");
+    setErrorMsg("");
+
+    const { error } = await supabase.from("citas").insert([
+      {
+        nombre: formData.nombre,
+        telefono: formData.telefono,
+        profesion: formData.profesion || null,
+        primera_vez: formData.primera_vez,
+        fecha: formData.fecha,
+        servicio: formData.servicio,
+        info_medica: formData.info_medica,
+      },
+    ]);
+
+    if (error) {
+      console.error("Error al guardar la cita:", error);
+      setErrorMsg("Ocurrió un error al agendar tu cita. Por favor intenta de nuevo.");
+      setStatus("error");
+    } else {
+      setStatus("success");
+      setFormData({
+        nombre: "",
+        telefono: "",
+        profesion: "",
+        primera_vez: false,
+        fecha: "",
+        servicio: "",
+        info_medica: "ninguna",
+      });
+    }
   };
 
   return (
@@ -52,146 +87,199 @@ export default function Home() {
             <h1 className="font-headline-lg text-headline-lg text-primary mb-2">Agendar Cita</h1>
             <p className="font-body-md text-body-md text-on-surface-variant">Reserva tu momento de relajación y belleza.</p>
           </div>
-          
+
+          {/* Success State */}
+          {status === "success" && (
+            <div className="relative z-10 flex flex-col items-center text-center gap-4 py-8 animate-fade-in">
+              <span className="material-symbols-outlined text-6xl text-primary-container">check_circle</span>
+              <h2 className="font-headline-md text-headline-md text-primary">¡Cita Agendada!</h2>
+              <p className="font-body-md text-body-md text-on-surface-variant max-w-sm">
+                Tu cita ha sido registrada con éxito. Pronto nos pondremos en contacto contigo para confirmarla.
+              </p>
+              <button
+                onClick={() => setStatus("idle")}
+                className="mt-4 bg-primary-container hover:bg-primary text-[#FFD700] font-label-md text-label-md px-6 py-3 rounded transition-all duration-300"
+              >
+                Agendar otra cita
+              </button>
+            </div>
+          )}
+
           {/* Booking Form */}
-          <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Nombre */}
-              <div className="flex flex-col space-y-2">
-                <label className="font-label-md text-label-md text-primary uppercase" htmlFor="nombre">Nombre Completo</label>
-                <input 
-                  className="form-input rounded px-4 py-3 font-body-md text-body-md text-on-surface w-full" 
-                  id="nombre" 
-                  name="nombre" 
-                  placeholder="Tu nombre" 
-                  required 
-                  type="text"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                />
-              </div>
-              {/* Teléfono */}
-              <div className="flex flex-col space-y-2">
-                <label className="font-label-md text-label-md text-primary uppercase" htmlFor="telefono">Teléfono</label>
-                <input 
-                  className="form-input rounded px-4 py-3 font-body-md text-body-md text-on-surface w-full" 
-                  id="telefono" 
-                  name="telefono" 
-                  placeholder="Tu número de contacto" 
-                  required 
-                  type="tel"
-                  value={formData.telefono}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            
-            {/* Profesión */}
-            <div className="flex flex-col space-y-2">
-              <label className="font-label-md text-label-md text-primary uppercase" htmlFor="profesion">Profesión u Ocupación</label>
-              <input 
-                className="form-input rounded px-4 py-3 font-body-md text-body-md text-on-surface w-full" 
-                id="profesion" 
-                name="profesion" 
-                placeholder="Para conocerte mejor" 
-                type="text"
-                value={formData.profesion}
-                onChange={handleChange}
-              />
-            </div>
-            
-            {/* Primera Vez */}
-            <div className="flex items-center space-x-3 py-2">
-              <input 
-                className="custom-checkbox w-5 h-5 rounded-sm border-outline-variant text-primary-container focus:ring-primary-container focus:ring-offset-background cursor-pointer" 
-                id="primera_vez" 
-                name="primera_vez" 
-                type="checkbox"
-                checked={formData.primera_vez}
-                onChange={handleChange}
-              />
-              <label className="font-body-md text-body-md text-on-surface cursor-pointer select-none" htmlFor="primera_vez">¿Es tu primera vez con nosotros?</label>
-            </div>
-            
-            {/* Fecha y Servicio */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Fecha */}
-              <div className="flex flex-col space-y-2 relative">
-                <label className="font-label-md text-label-md text-primary uppercase" htmlFor="fecha">Fecha Deseada</label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-outline">calendar_today</span>
+          {status !== "success" && (
+            <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Nombre */}
+                <div className="flex flex-col space-y-2">
+                  <label className="font-label-md text-label-md text-primary uppercase" htmlFor="nombre">Nombre Completo</label>
                   <input 
-                    className="form-input rounded pl-10 pr-4 py-3 font-body-md text-body-md text-on-surface w-full" 
-                    id="fecha" 
-                    name="fecha" 
+                    className="form-input rounded px-4 py-3 font-body-md text-body-md text-on-surface w-full" 
+                    id="nombre" 
+                    name="nombre" 
+                    placeholder="Tu nombre" 
                     required 
-                    type="date"
-                    value={formData.fecha}
+                    type="text"
+                    value={formData.nombre}
                     onChange={handleChange}
+                    disabled={status === "loading"}
+                  />
+                </div>
+                {/* Teléfono */}
+                <div className="flex flex-col space-y-2">
+                  <label className="font-label-md text-label-md text-primary uppercase" htmlFor="telefono">Teléfono</label>
+                  <input 
+                    className="form-input rounded px-4 py-3 font-body-md text-body-md text-on-surface w-full" 
+                    id="telefono" 
+                    name="telefono" 
+                    placeholder="Tu número de contacto" 
+                    required 
+                    type="tel"
+                    value={formData.telefono}
+                    onChange={handleChange}
+                    disabled={status === "loading"}
                   />
                 </div>
               </div>
-              {/* Servicio */}
+              
+              {/* Profesión */}
               <div className="flex flex-col space-y-2">
-                <label className="font-label-md text-label-md text-primary uppercase" htmlFor="servicio">Servicio Principal</label>
+                <label className="font-label-md text-label-md text-primary uppercase" htmlFor="profesion">Profesión u Ocupación</label>
+                <input 
+                  className="form-input rounded px-4 py-3 font-body-md text-body-md text-on-surface w-full" 
+                  id="profesion" 
+                  name="profesion" 
+                  placeholder="Para conocerte mejor" 
+                  type="text"
+                  value={formData.profesion}
+                  onChange={handleChange}
+                  disabled={status === "loading"}
+                />
+              </div>
+              
+              {/* Primera Vez */}
+              <div className="flex items-center space-x-3 py-2">
+                <input 
+                  className="custom-checkbox w-5 h-5 rounded-sm border-outline-variant text-primary-container focus:ring-primary-container focus:ring-offset-background cursor-pointer" 
+                  id="primera_vez" 
+                  name="primera_vez" 
+                  type="checkbox"
+                  checked={formData.primera_vez}
+                  onChange={handleChange}
+                  disabled={status === "loading"}
+                />
+                <label className="font-body-md text-body-md text-on-surface cursor-pointer select-none" htmlFor="primera_vez">¿Es tu primera vez con nosotros?</label>
+              </div>
+              
+              {/* Fecha y Servicio */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Fecha */}
+                <div className="flex flex-col space-y-2 relative">
+                  <label className="font-label-md text-label-md text-primary uppercase" htmlFor="fecha">Fecha Deseada</label>
+                  <div className="relative">
+                    <span className="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-outline">calendar_today</span>
+                    <input 
+                      className="form-input rounded pl-10 pr-4 py-3 font-body-md text-body-md text-on-surface w-full" 
+                      id="fecha" 
+                      name="fecha" 
+                      required 
+                      type="date"
+                      value={formData.fecha}
+                      onChange={handleChange}
+                      disabled={status === "loading"}
+                    />
+                  </div>
+                </div>
+                {/* Servicio */}
+                <div className="flex flex-col space-y-2">
+                  <label className="font-label-md text-label-md text-primary uppercase" htmlFor="servicio">Servicio Principal</label>
+                  <select 
+                    className="form-input rounded px-4 py-3 font-body-md text-body-md text-on-surface w-full appearance-none bg-transparent" 
+                    id="servicio" 
+                    name="servicio" 
+                    required
+                    value={formData.servicio}
+                    onChange={handleChange}
+                    disabled={status === "loading"}
+                  >
+                    <option disabled value="">Selecciona un servicio...</option>
+                    <option value="manicure_spa">Manicure Spa</option>
+                    <option value="pedicure_spa">Pedicure Spa</option>
+                    <option value="unas_acrilicas">Uñas Acrílicas</option>
+                    <option value="gel_semipermanente">Gel Semipermanente</option>
+                  </select>
+                </div>
+              </div>
+              
+              {/* Botón Añadir Servicio (Simulado) */}
+              <div className="flex justify-end">
+                <button className="flex items-center space-x-2 text-primary hover:text-primary-container transition-colors duration-300 font-label-md text-label-md" type="button">
+                  <span className="material-symbols-outlined text-[18px]">add</span>
+                  <span>Añadir otro servicio</span>
+                </button>
+              </div>
+              
+              {/* Información Médica */}
+              <div className="flex flex-col space-y-2 pt-4 border-t border-outline-variant/30">
+                <label className="font-label-md text-label-md text-primary uppercase" htmlFor="info_medica">Información Médica Relevante</label>
                 <select 
                   className="form-input rounded px-4 py-3 font-body-md text-body-md text-on-surface w-full appearance-none bg-transparent" 
-                  id="servicio" 
-                  name="servicio" 
-                  required
-                  value={formData.servicio}
+                  id="info_medica" 
+                  name="info_medica"
+                  value={formData.info_medica}
                   onChange={handleChange}
+                  disabled={status === "loading"}
                 >
-                  <option disabled value="">Selecciona un servicio...</option>
-                  <option value="manicure_spa">Manicure Spa</option>
-                  <option value="pedicure_spa">Pedicure Spa</option>
-                  <option value="unas_acrilicas">Uñas Acrílicas</option>
-                  <option value="gel_semipermanente">Gel Semipermanente</option>
+                  <option value="ninguna">Ninguna condición relevante</option>
+                  <option value="diabetes">Diabetes</option>
+                  <option value="onicomicosis">Onicomicosis (Hongos)</option>
+                  <option value="una_encarnada">Uña Encarnada</option>
+                  <option value="alergias">Alergias a productos químicos</option>
+                  <option value="otra">Otra (Especificar al llegar)</option>
                 </select>
+                <p className="text-label-sm text-outline mt-1">Esta información es confidencial y nos ayuda a brindarte un mejor servicio.</p>
               </div>
-            </div>
-            
-            {/* Botón Añadir Servicio (Simulado) */}
-            <div className="flex justify-end">
-              <button className="flex items-center space-x-2 text-primary hover:text-primary-container transition-colors duration-300 font-label-md text-label-md" type="button">
-                <span className="material-symbols-outlined text-[18px]">add</span>
-                <span>Añadir otro servicio</span>
-              </button>
-            </div>
-            
-            {/* Información Médica */}
-            <div className="flex flex-col space-y-2 pt-4 border-t border-outline-variant/30">
-              <label className="font-label-md text-label-md text-primary uppercase" htmlFor="info_medica">Información Médica Relevante</label>
-              <select 
-                className="form-input rounded px-4 py-3 font-body-md text-body-md text-on-surface w-full appearance-none bg-transparent" 
-                id="info_medica" 
-                name="info_medica"
-                value={formData.info_medica}
-                onChange={handleChange}
-              >
-                <option value="ninguna">Ninguna condición relevante</option>
-                <option value="diabetes">Diabetes</option>
-                <option value="onicomicosis">Onicomicosis (Hongos)</option>
-                <option value="una_encarnada">Uña Encarnada</option>
-                <option value="alergias">Alergias a productos químicos</option>
-                <option value="otra">Otra (Especificar al llegar)</option>
-              </select>
-              <p className="text-label-sm text-outline mt-1">Esta información es confidencial y nos ayuda a brindarte un mejor servicio.</p>
-            </div>
-            
-            {/* Submit Button */}
-            <div className="pt-6">
-              <button className="w-full bg-primary-container hover:bg-primary text-[#FFD700] font-headline-md text-headline-md py-4 rounded shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center space-x-2" type="submit">
-                <span>Confirmar Cita</span>
-                <span className="material-symbols-outlined">check_circle</span>
-              </button>
-            </div>
-          </form>
+
+              {/* Error Message */}
+              {status === "error" && (
+                <div className="flex items-center gap-3 bg-error-container/30 border border-error/30 text-on-error-container rounded px-4 py-3 text-body-md font-body-md">
+                  <span className="material-symbols-outlined text-error text-[20px]">error</span>
+                  {errorMsg}
+                </div>
+              )}
+              
+              {/* Submit Button */}
+              <div className="pt-6">
+                <button 
+                  className="w-full bg-primary-container hover:bg-primary text-[#FFD700] font-headline-md text-headline-md py-4 rounded shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-0.5 flex items-center justify-center space-x-2 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0" 
+                  type="submit"
+                  disabled={status === "loading"}
+                >
+                  {status === "loading" ? (
+                    <>
+                      <span className="material-symbols-outlined animate-spin">progress_activity</span>
+                      <span>Guardando cita...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Confirmar Cita</span>
+                      <span className="material-symbols-outlined">check_circle</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </main>
 
       <section className="flex justify-center items-center gap-6 relative z-10 mb-4">
-        <a href="https://www.instagram.com/romaglamhouse" target="_blank" className="flex items-center justify-center rounded-full bg-surface-container-high text-primary-container hover:scale-110 transition-all duration-300 soft-shadow w-16 h-16" aria-label="Instagram">
+        <a
+          href="https://www.instagram.com/romaglamhouse?igsh=MWl4emRlYjBlbGszcA%3D%3D&utm_source=qr"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center rounded-full bg-surface-container-high text-primary-container hover:scale-110 transition-all duration-300 soft-shadow w-16 h-16"
+          aria-label="Instagram"
+        >
           <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
         </a>
         <a href="#" className="flex items-center justify-center rounded-full bg-surface-container-high text-primary-container hover:scale-110 transition-all duration-300 soft-shadow w-16 h-16" aria-label="WhatsApp">
@@ -206,7 +294,7 @@ export default function Home() {
             <p className="text-label-sm text-outline"><span style={{ color: "rgb(68, 50, 36)", fontSize: "14px", backgroundColor: "rgb(248, 242, 239)" }}>© 2027 Doom Forge Studios</span></p>
           </div>
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-            <a href="#" className="text-label-md text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/30 px-3 py-1 rounded-sm hover:bg-surface-container-high">Gestión de Citas</a>
+            <a href="/citas" className="text-label-md text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/30 px-3 py-1 rounded-sm hover:bg-surface-container-high">Gestión de Citas</a>
           </nav>
         </div>
       </footer>
