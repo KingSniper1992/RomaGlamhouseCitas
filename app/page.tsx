@@ -331,14 +331,9 @@ export default function Home() {
 
       {/* Footer Original */}
       <footer className="bg-surface-container border-t border-outline-variant/30 py-2 sm:py-2.5 px-4 md:px-8 mt-auto z-10">
-        <div className="max-w-2xl mx-auto flex flex-col md:flex-row items-center justify-between gap-1.5 md:gap-4">
-          <div className="flex flex-col items-center md:items-start">
-            <span className="font-headline-md text-primary uppercase tracking-wider text-xs md:text-sm">Roma Glam House</span>
-            <p className="text-label-sm text-outline text-[10px] md:text-[11px]"><span style={{ color: "rgb(68, 50, 36)", backgroundColor: "rgb(248, 242, 239)" }}>© 2027 Doom Forge Studios</span></p>
-          </div>
-          <nav className="flex flex-wrap justify-center gap-x-6 gap-y-1">
-            <a href="/citas" className="text-label-md text-xs text-on-surface-variant hover:text-primary transition-colors border border-outline-variant/30 px-2.5 py-0.5 rounded-sm hover:bg-surface-container-high">Gestión de Citas</a>
-          </nav>
+        <div className="max-w-2xl mx-auto flex flex-col items-center justify-center text-center">
+          <span className="font-headline-md text-primary uppercase tracking-wider text-xs md:text-sm">Roma Glam House</span>
+          <p className="text-label-sm text-outline text-[10px] md:text-[11px]"><span style={{ color: "rgb(68, 50, 36)", backgroundColor: "rgb(248, 242, 239)" }}>© 2027 Doom Forge Studios</span></p>
         </div>
       </footer>
     </div>
